@@ -18,3 +18,42 @@ kasvin olosuhteita ja ohjata kastelua automaattisesti.
 - Tietokonepohjainen backend
 - Web-käyttöliittymä (TypeScript)
 - Kamera?
+
+
++-------------------+
+|      Käyttäjä     |
++-------------------+
+          |
+          v
++---------------------------+
+|   Web-käyttöliittymä      |
+|  (TypeScript / selain)    |
++---------------------------+
+          |
+          v  REST / HTTP
++---------------------------+
+|   Backend-palvelin        |
+|   (Python + REST API)     |
++---------------------------+
+          |
+          |  Mittausdata,
+          |  asetukset
+          v
++---------------------------+
+|  Sulautettu laite         |
+|        (ESP32)            |
++---------------------------+
+     |                |
+     |                |
+     v                v
++-----------+    +-----------+
+| Anturit   |    | Kastelu   |
+| - kosteus |    | - pumppu  |
+| - lämpö   |    |           |
++-----------+    +-----------+
+
+     ^
+     |
++---------------------------+
+| Aurinkopaneeli + akku     |
++---------------------------+
