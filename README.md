@@ -32,41 +32,41 @@ kasvin olosuhteita ja ohjata kastelua automaattisesti.
 Työssä kehitetään aurinkoenergialla toimiva kasvin seuranta- ja automaattinen kastelujärjestelmä, joka koostuu sulautetusta laitteesta ja tietokonepohjaisesta ohjelmistosovelluksesta.
 Järjestelmän tarkoituksena on:
 
-mitata kasvin olosuhteita jatkuvasti
-tehdä kastelupäätöksiä automaattisesti
-tarjota käyttäjälle näkyvyys kasvin tilaan
+mitata kasvin olosuhteita jatkuvasti.
+tehdä kastelupäätöksiä automaattisesti.
+tarjota käyttäjälle näkyvyys kasvin tilaan.
 
 Järjestelmä toimii hajautettuna kokonaisuutena, jossa sulautettu laite vastaa fyysisestä mittaamisesta ja ohjauksesta, ja ohjelmisto vastaa datan käsittelystä ja esittämisestä.
 
 # Systeemin pääominaisuudet
 Järjestelmän keskeiset ominaisuudet ovat:
 
-Maaperän kosteuden mittaus
-Ympäristön lämpötilan mittaus
-Automaattinen kastelu raja-arvojen perusteella
-Mittausdatan siirto backend-palvelimelle
-Mittaushistorian tallennus
-Tietokonepohjainen käyttöliittymä kasvin tilan tarkasteluun
-Energiatehokas toiminta aurinkovirran avulla
+Maaperän kosteuden mittaus.
+Ympäristön lämpötilan mittaus.
+Automaattinen kastelu raja-arvojen perusteella.
+Mittausdatan siirto backend-palvelimelle.
+Mittaushistorian tallennus.
+Tietokonepohjainen käyttöliittymä kasvin tilan tarkasteluun.
+Energiatehokas toiminta aurinkovirran avulla.
 
 Ominaisuudet on valittu siten, että järjestelmä on riittävän laaja mutta toteutettavissa opinnäytetyön aikataulussa.
 
 # Vaatimukset
 Toiminnalliset vaatimukset
 
-Järjestelmän tulee mitata maaperän kosteutta säännöllisesti
-Järjestelmän tulee käynnistää kastelu, kun kosteus alittaa raja-arvon
-Järjestelmän tulee lähettää mittausdata backend-palvelimelle
-Käyttäjän tulee voida tarkastella mittaushistoriaa
-Käyttäjän tulee voida muuttaa raja-arvoja käyttöliittymän kautta
+Järjestelmän tulee mitata maaperän kosteutta säännöllisesti.
+Järjestelmän tulee käynnistää kastelu, kun kosteus alittaa raja-arvon.
+Järjestelmän tulee lähettää mittausdata backend-palvelimelle.
+Käyttäjän tulee voida tarkastella mittaushistoriaa.
+Käyttäjän tulee voida muuttaa raja-arvoja käyttöliittymän kautta.
 
 
 Ei-toiminnalliset vaatimukset
 
-Järjestelmän tulee olla energiatehokas
-Järjestelmän tulee toimia ilman jatkuvaa käyttäjän valvontaa
-Järjestelmän tulee olla modulaarinen ja laajennettavissa
-Rajapintojen tulee olla selkeästi määriteltyjä
+Järjestelmän tulee olla energiatehokas.
+Järjestelmän tulee toimia ilman jatkuvaa käyttäjän valvontaa.
+Järjestelmän tulee olla modulaarinen ja laajennettavissa.
+Rajapintojen tulee olla selkeästi määriteltyjä.
 
 
 # Järjestelmän jakautuminen alisysteemeihin
@@ -115,35 +115,35 @@ Rajapinnat on toteutettu REST-arkkitehtuurin mukaisesti, koska se on yksinkertai
 Keskeiset käyttötapaukset ovat:
 1. Mittaus ja kastelu
 
-Laite mittaa maaperän kosteuden
-Laite vertaa arvoa raja-arvoihin
-Kastelu käynnistetään tarvittaessa
-Mittaustieto lähetetään backendille
+Laite mittaa maaperän kosteuden.
+Laite vertaa arvoa raja-arvoihin.
+Kastelu käynnistetään tarvittaessa.
+Mittaustieto lähetetään backendille.
 
 
 2. Käyttäjä tarkastelee tilaa
 
-Käyttäjä avaa web‑sovelluksen
-Sovellus hakee mittaustiedot backendiltä
-Mittaukset näytetään käyttöliittymässä
+Käyttäjä avaa web‑sovelluksen.
+Sovellus hakee mittaustiedot backendiltä.
+Mittaukset näytetään käyttöliittymässä.
 
 
 3. Asetusten muuttaminen
 
-Käyttäjä syöttää uudet raja-arvot
-Frontend lähettää tiedot backendille
-Backend tallentaa asetukset
-Laite hyödyntää uusia arvoja
+Käyttäjä syöttää uudet raja-arvot.
+Frontend lähettää tiedot backendille.
+Backend tallentaa asetukset.
+Laite hyödyntää uusia arvoja.
 
 
 # Ohjelmistot ja komponentit
 Laitteisto
 
-ESP32 mikrokontrolleri
-kapasitiivinen maaperän kosteusanturi
-lämpötila-anturi
-vesipumppu / rele
-aurinkopaneeli + akku
+ESP32 mikrokontrolleri.
+kapasitiivinen maaperän kosteusanturi.
+lämpötila-anturi.
+vesipumppu / rele.
+aurinkopaneeli + akku.
 
 
 Ohjelmistot
@@ -181,10 +181,10 @@ Valinnat tehtiin toteutuksen yksinkertaisuuden ja luotettavuuden perusteella.
 # Testaus ja todentaminen
 Järjestelmän toimivuus todennetaan:
 
-vertaamalla mittausarvoja todelliseen tilanteeseen
-testaamalla kastelun käynnistyminen raja-arvojen perusteella
-testaamalla datan siirtyminen laite → backend → frontend
-tarkastamalla historiadatan tallennus
+vertaamalla mittausarvoja todelliseen tilanteeseen.
+testaamalla kastelun käynnistyminen raja-arvojen perusteella.
+testaamalla datan siirtyminen laite → backend → frontend.
+tarkastamalla historiadatan tallennus.
 
 Testaus kattaa sekä yksittäiset alisysteemit että koko järjestelmän toiminnan.
 
