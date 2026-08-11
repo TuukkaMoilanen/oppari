@@ -1,11 +1,11 @@
 #include <stdio.h>
 
 #include "esp_err.h"
+
+#include "time_service.h"
 #include "wifilove.h"
 #include "wificreds.h"
-
 #include "camera_capture.h"
-
 #include "http_client_service.h"
 
 #include "freertos/FreeRTOS.h"
@@ -15,20 +15,25 @@
 //temporary test main with wifi, http client and camera testing functionality.
 void app_main(void)
 {
-    if(ESP_OK != init_camera()) 
+    if(init_camera() != ESP_OK) 
     {
         return;
     }
 
-    if( wifiInit() == ESP_OK)
-    {
-        wifiConnect(SSID, wifiPass);
-    }
-    else
+    if( wifiInit() != ESP_OK)
     {
         return;
     }
 
+    if( wifiConnect(SSID, wifiPass) != ESP_OK)
+    {
+        return;
+    }
+
+    if(sync_time() != ESP_OK)
+    {
+        return;
+    }
 
     while (1)
     {

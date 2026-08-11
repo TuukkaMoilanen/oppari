@@ -1,5 +1,5 @@
 #include "esp_http_client.h"
-#include "esp_rtc_time.h"
+#include "time_service.h"
 
 #include "http_client_service.h"
 #include "camera_capture.h"
@@ -9,11 +9,12 @@ static const char *TAG = "http_client_service";
 
 char * make_pic_url( char * url)
 {
-    int time = esp_rtc_get_time_us();
-    int length = snprintf( NULL, 0, "%s%s%s%d%s", "http://", url, "/pic" , time, ".jpg");
+    char* time = get_current_time_str();
+    int length = snprintf( NULL, 0, "%s%s%s%s%s", "http://", url, "/pic" , time, ".jpg");
     char* fullsendurl = malloc( length + 1 );
-    snprintf( fullsendurl, length + 1, "%s%s%s%d%s", "http://", url, "/pic" , time, ".jpg");
+    snprintf( fullsendurl, length + 1, "%s%s%s%s%s", "http://", url, "/pic" , time, ".jpg");
     ESP_LOGI(TAG,"created pic url: %s", fullsendurl);
+    free(time);
     return fullsendurl;
 }
 
@@ -40,5 +41,6 @@ void send_pics()
     esp_http_client_write(client, (char *)jpg2send.jpg, jpg2send.jpglen);
     esp_http_client_close(client);
     //esp_http_client_cleanup(client);
+    free(jpg2send.jpg);
     free(picurl);
 }
