@@ -7,6 +7,7 @@
 #include "wificreds.h"
 #include "camera_capture.h"
 #include "http_client_service.h"
+#include "soil_measurement.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -15,6 +16,11 @@
 //temporary test main with wifi, http client and camera testing functionality.
 void app_main(void)
 {
+    if(setup_adc() != ESP_OK) 
+    {
+        return;
+    }
+    
     if(init_camera() != ESP_OK) 
     {
         return;
