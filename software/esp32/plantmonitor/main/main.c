@@ -45,6 +45,8 @@ void app_main(void)
     {
         send_pics();
         
+        measure_soil_moisture();
+        
         vTaskDelay(20000 / portTICK_RATE_MS);
     }
 }
