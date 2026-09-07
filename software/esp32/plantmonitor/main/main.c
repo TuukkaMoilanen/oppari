@@ -3,6 +3,7 @@
 #include "esp_err.h"
 
 #include "esp_log.h"
+#include "reporter.h"
 #include "time_service.h"
 #include "wifilove.h"
 #include "wificreds.h"
@@ -10,6 +11,7 @@
 #include "http_client_service.h"
 #include "soil_measurement.h"
 #include "ambient_measurement.h"
+#include "pump_control.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -30,6 +32,13 @@ void app_main(void)
         ESP_LOGE(TAG, "Failed to setup i2c controller !!!");
         return;
     }
+
+    // if(setup_pump_control() != ESP_OK) 
+    // {
+    //     ESP_LOGE(TAG, "Failed to setup pump control !!!");
+    //     return;
+    // }
+
 
     if(init_camera() != ESP_OK) 
     {
@@ -57,12 +66,10 @@ void app_main(void)
 
     while (1)
     {
-        send_pics();
-
-        double temperature;
-        double humidity;
-        measure_ambient_data(&temperature, &humidity);
-        measure_soil_moisture();
+        //enable_pump_for_ms(3000);
+        report_struct report;
+        gather_report(&report);
+        send_report(&report);
         
         vTaskDelay(20000 / portTICK_RATE_MS);
     }
