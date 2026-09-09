@@ -2,7 +2,6 @@
 #include "esp_http_client.h"
 #include "esp_log.h"
 #include "reporter.h"
-#include "time_service.h"
 
 #include "http_client_service.h"
 #include "camera_capture.h"

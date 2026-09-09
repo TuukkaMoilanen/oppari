@@ -70,7 +70,8 @@ void app_main(void)
         report_struct report;
         gather_report(&report);
         send_report(&report);
+        free(report.report_pic.jpg);
         
-        vTaskDelay(20000 / portTICK_RATE_MS);
+        vTaskDelay(20000 / portTICK_PERIOD_MS);
     }
 }

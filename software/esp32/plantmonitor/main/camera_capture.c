@@ -1,4 +1,6 @@
 #include "camera_capture.h"
+#include "esp_log.h"
+#include "sensor.h"
 
 
 static const char *TAG = "camera_capture";
@@ -26,8 +28,18 @@ jpg_struct take_pic()
     camera_fb_t *pic = esp_camera_fb_get();
     ESP_LOGI(TAG, "Picture taken! Its size was: %zu bytes", pic->len);
 
-    frame2jpg(pic, 90, &peggy.jpg, &peggy.jpglen);
-    ESP_LOGI(TAG, "Picture jpegged! Jpg output buffer size: %zu", peggy.jpglen);
+    if(pic->format == PIXFORMAT_JPEG)
+    {
+        ESP_LOGI(TAG, "pic already jpg!");
+        peggy.jpg = pic->buf;
+        peggy.jpglen = pic->len;
+    }
+    else
+    {
+        frame2jpg(pic, 90, &peggy.jpg, &peggy.jpglen);
+        ESP_LOGI(TAG, "Picture jpegged! Jpg output buffer size: %zu", peggy.jpglen);
+    }
+    
     esp_camera_fb_return(pic);
     return peggy;
 }

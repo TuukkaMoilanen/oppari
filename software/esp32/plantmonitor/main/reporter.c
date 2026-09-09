@@ -1,6 +1,7 @@
 #include "reporter.h"
 #include "camera_capture.h"
 #include "esp_err.h"
+#include "esp_log.h"
 #include "soil_measurement.h"
 #include "ambient_measurement.h"
 #include "time_service.h"
