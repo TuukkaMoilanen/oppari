@@ -76,6 +76,8 @@ Desktop.ini
 *.workspace # General workspace files, can be from various tools
 *.suo       # Visual Studio Solution User Options
 *.sln.docstates # Visual Studio
+.vscode/settings.json
+.vscode/c_cpp_properties.json
 
 # bad practice to commit passwords
 */wificreds.h
