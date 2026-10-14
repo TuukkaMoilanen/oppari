@@ -68,7 +68,9 @@ esp_err_t send_report(const report_struct * report)
     esp_http_client_handle_t client = esp_http_client_init(&config);
 
     char * reporturl = make_file_url(SERVER_URL, report->report_name);
-    int reportlength = (strlen(report->report_string) + 1) * sizeof(char);
+
+    // no +1 to reportlength to not send null terminator (breaks json parsing)
+    int reportlength = (strlen(report->report_string)) * sizeof(char);
 
     status = esp_http_client_set_url(client, reporturl);
     status = esp_http_client_set_method(client, HTTP_METHOD_PUT);

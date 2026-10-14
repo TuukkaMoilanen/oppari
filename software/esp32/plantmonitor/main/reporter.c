@@ -12,6 +12,7 @@
 enum file_type
 {
     txt,
+    json,
     jpg
 };
 
@@ -32,6 +33,11 @@ char * make_file_name(const char * timestamp, enum file_type type)
             strncpy(name, "report", strlen("report") + 1);
             strncpy(extension, ".txt", strlen(".txt") + 1);
             break;
+        }
+        case json:
+        {
+            strncpy(name, "report", strlen("report") + 1);
+            strncpy(extension, ".json", strlen(".json") + 1);
         }
     }
 
@@ -61,20 +67,19 @@ esp_err_t gather_report(report_struct *report)
 
     report->report_pic_name = make_file_name(report->report_timestamp, jpg);
 
-    report->report_name = make_file_name(report->report_timestamp, txt);
-
+    report->report_name = make_file_name(report->report_timestamp, json);
 
     int length = snprintf( NULL, 0, "%s%s%s%s%f%s%s%f%s%s%f%s",
-                            "associated picture: ", report->report_pic_name, "\n", 
-                            "soil moisture: ", soil_moisture, "\n" ,
-                            "ambient temperature: ", ambient_temperature, "\n",
-                            "ambient humidity: ", ambient_humidity, "\n");
+                            "{\n\"pic_name\":\"", report->report_pic_name, "\",\n", 
+                            "\"moisture\":\"", soil_moisture, "\",\n" ,
+                            "\"temperature\":\"", ambient_temperature, "\",\n",
+                            "\"humidity\":\"", ambient_humidity, "\"\n}");
     report->report_string = malloc( length + 1 );
     snprintf(report->report_string, length + 1, "%s%s%s%s%f%s%s%f%s%s%f%s",
-                            "associated picture: ", report->report_pic_name, "\n", 
-                            "soil moisture: ", soil_moisture, "\n" ,
-                            "ambient temperature: ", ambient_temperature, "\n",
-                            "ambient humidity: ", ambient_humidity, "\n");
+                            "{\n\"pic_name\":\"", report->report_pic_name, "\",\n", 
+                            "\"moisture\":\"", soil_moisture, "\",\n" ,
+                            "\"temperature\":\"", ambient_temperature, "\",\n",
+                            "\"humidity\":\"", ambient_humidity, "\"\n}");
     ESP_LOGI(TAG,"created report string: %s", report->report_string);
 
     return status;

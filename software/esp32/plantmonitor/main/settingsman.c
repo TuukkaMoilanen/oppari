@@ -33,7 +33,6 @@ esp_err_t load_settings()
             char * fax = strtok(NULL, delim2);
             (strcmp(fax, "true" ) == 0) ? settings.powersavemode = true : false;
             ESP_LOGI(TAG, "Loaded setting powersavemode = %s", settings.powersavemode ? "true" : "false");
-            free(fax);
         }
         else if(strcmp(setting_name, REPORT_INTERVAL_SETTING_NAME) == 0)
         {
@@ -55,7 +54,7 @@ esp_err_t load_settings()
 
     free(setting_name);
     free(settings_str);
-    
+
     status = ESP_OK;
 
     return status;
