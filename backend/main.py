@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from database import engine, SessionLocal
-from models import Base, Measurement as MeasurementModel    
+import models
+from models import Base, Measurement as MeasurementModel
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -17,11 +18,18 @@ allow_headers=["*"],
 Base.metadata.create_all(bind=engine)
 
 class Measurement(BaseModel):
-    deviceId: str
-    soilMoisture: float
-    temperature: float
-    humidity: float
-    light: float
+   moisture: float
+   temperature: float
+   humidity: float
+   pic_name: str
+
+
+class SettingsUpdate(BaseModel):
+    moisture_target: float
+    report_interval: int
+    watering_check_interval: int
+    power_saving: int
+
 
 @app.get("/measurements")
 def get_measurements():
@@ -57,11 +65,10 @@ def create_measurement(data: Measurement):
     db = SessionLocal()
 
     measurement = MeasurementModel(
-        device_id=data.deviceId,
-        soil_moisture=data.soilMoisture,
+        moisture=data.moisture,
         temperature=data.temperature,
         humidity=data.humidity,
-        light=data.light  
+        pic_name=data.pic_name
     )
     db.add(measurement)
     db.commit()
@@ -70,3 +77,41 @@ def create_measurement(data: Measurement):
     return {
         "status": "saved"
     }
+
+@app.get("/settings")
+def get_settings():
+
+    db = SessionLocal()
+    settings = db.query(models.Settings).first()
+
+    if settings is None:
+        settings = models.Settings()
+        db.add(settings)
+        db.commit()
+        db.refresh(settings)
+
+    db.close()
+
+    return settings
+
+@app.put("/settings")
+def update_settings(data: SettingsUpdate):
+
+    db = SessionLocal()
+
+    settings = db.query(models.Settings).first()
+
+    if settings is None:
+        settings = models.Settings()
+        db.add(settings)
+
+    settings.moisture_target = data.moisture_target
+    settings.report_interval = data.report_interval
+    settings.watering_check_interval = data.watering_check_interval
+    settings.power_saving = data.power_saving
+
+    db.commit()
+
+    db.close()
+
+    return {"status": "updated"}
