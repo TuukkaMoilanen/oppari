@@ -6,6 +6,7 @@ typedef struct
 {
     bool powersavemode;
     int report_interval;
+    int watering_interval;
     double soil_moisture_target;
 }settings_struct;
 
