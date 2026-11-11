@@ -69,6 +69,7 @@ function App() {
     "http://127.0.0.1:8000/settings"
   );
 
+  
   const data = await response.json();
 
   setSettings(data);
@@ -94,45 +95,70 @@ function App() {
   }, []);
 
   const plantStatus =
-  measurement &&
-  settings &&
-  measurement.moisture < settings.moisture_target
-    ? "🔴 Vaatii kastelua"
-    : "🟢 Kosteus hyvä";
+    measurement &&
+    settings &&
+    measurement.moisture < settings.moisture_target
+      ? "🔴 Vaatii kastelua"
+      : "🟢 Kosteus hyvä";
+
+
 
   return (
     <div className="App">
-      <h1>🌱 Kasvimonitori</h1>
-      <h2>Kasvin tila</h2>
-      <p>{plantStatus}</p>
+      <h1>🌱 Smart Plant Monitor</h1>
 
+      <div className="status-card">
+        {plantStatus}
+      </div>
 
     {measurement && (
-      <div className="measurements">
+      <div className="overview-card">
 
-        <div className="measurement-card">
-          <h2>💧 Kasvin kosteus</h2>
-          <p>{measurement.moisture} %</p>
-        </div>
+        <div className="overview-metrics">
 
-        <div className="measurement-card">
-          <h2>🌡️ Lämpötila</h2>
-          <p>{measurement.temperature} °C</p>
-        </div>
-
-        <div className="measurement-card">
-          <h2>💦 Ilmankosteus</h2>
-          <p>{measurement.humidity} %</p>
-        </div>
-
-        <div className="measurement-card">
-          <h2>📷 Viimeisin kuva</h2>
-          <div className="image-placeholder">
-          Kuva tulee tähän
+          <div className="overview-item">
+            <div className="metric-icon">💧</div>
+            <div className="metric-value">
+              {measurement.moisture} %
+            </div>
+            <div className="metric-label">
+              Kasvin kosteus
+            </div>
           </div>
+
+          <div className="overview-item">
+            <div className="metric-icon">🌡️</div>
+            <div className="metric-value">
+              {measurement.temperature} °C
+            </div>
+            <div className="metric-label">
+              Lämpötila
+            </div>
           </div>
-    </div>
-    )}   
+
+          <div className="overview-item">
+            <div className="metric-icon">💦</div>
+            <div className="metric-value">
+              {measurement.humidity} %
+            </div>
+            <div className="metric-label">
+              Ilmankosteus
+            </div>
+          </div>
+
+        </div>
+
+        <div className="overview-divider"></div>
+
+        <h2>📷 Viimeisin kuva</h2>
+
+        <div className="image-placeholder">
+          Ei kuvaa saatavilla
+        </div>
+
+      </div>
+)}
+    
 
   <div className="chart-container">
     <h2>Kosteushistoria</h2>
@@ -161,14 +187,7 @@ function App() {
         y={30}
         stroke="orange"
         strokeDasharray="3 3"
-        label="Kuiva"
-      />
-
-      <ReferenceLine
-        y={60}
-        stroke="blue"
-        strokeDasharray="3 3"
-        label="Märkä"
+        label="Kasteluraja"
       />
 
         <Line
