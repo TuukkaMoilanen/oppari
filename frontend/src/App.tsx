@@ -111,7 +111,7 @@ function App() {
         {plantStatus}
       </div>
 
-    {measurement && (
+    {measurement ? (
       <div className="overview-card">
 
         <div className="overview-metrics">
@@ -157,7 +157,13 @@ function App() {
         </div>
 
       </div>
-)}
+      ) : (
+      <div className="overview-card">
+        <h2>⏳ Ei mittauksia saatavilla</h2>
+       <p>Käynnistä ESP32 tai lisää testimittaus Swaggerista.</p>
+     </div>
+  )}
+  
     
 
   <div className="chart-container">
