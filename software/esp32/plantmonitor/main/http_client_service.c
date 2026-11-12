@@ -8,6 +8,10 @@
 
 static const char *TAG = "http_client_service";
 
+#define SERVER_URL "192.168.101.105:8000"
+#define MEASUREMENT_PATH "measurements"
+#define SETTINGS_PATH "settings"
+
 #define HTTP_OUTPUT_BUFFER_MAX_LENGTH 256
 
 char local_response_buffer[HTTP_OUTPUT_BUFFER_MAX_LENGTH + 1] = {0};
@@ -22,12 +26,12 @@ char local_response_buffer[HTTP_OUTPUT_BUFFER_MAX_LENGTH + 1] = {0};
     .disable_auto_redirect = true,
 };
 
-char * make_file_url(char * url, char * file_name)
+char * make_full_url(char * url, char * path_name)
 {
-    int length = snprintf( NULL, 0, "%s%s%s%s", "http://", url, "/" ,file_name);
+    int length = snprintf( NULL, 0, "%s%s%s%s", "http://", url, "/" ,path_name);
     char* fullsendurl = malloc( length + 1 );
-    snprintf( fullsendurl, length + 1, "%s%s%s%s", "http://", url, "/" ,file_name);
-    ESP_LOGI(TAG,"created pic url: %s", fullsendurl);
+    snprintf( fullsendurl, length + 1, "%s%s%s%s", "http://", url, "/" ,path_name);
+    ESP_LOGI(TAG,"created full url: %s", fullsendurl);
     return fullsendurl;
 }
 
@@ -67,13 +71,14 @@ esp_err_t send_report(const report_struct * report)
 
     esp_http_client_handle_t client = esp_http_client_init(&config);
 
-    char * reporturl = make_file_url(SERVER_URL, report->report_name);
+    char * reporturl = make_full_url(SERVER_URL, MEASUREMENT_PATH);
 
     // no +1 to reportlength to not send null terminator (breaks json parsing)
     int reportlength = (strlen(report->report_string)) * sizeof(char);
 
     status = esp_http_client_set_url(client, reporturl);
-    status = esp_http_client_set_method(client, HTTP_METHOD_PUT);
+    status = esp_http_client_set_method(client, HTTP_METHOD_POST);
+    status = esp_http_client_set_header(client, "Content-Type", "application/json");
     status = esp_http_client_open(client, reportlength);
     status = esp_http_client_write(client, report->report_string, reportlength);
     status = check_http_response(&client);
@@ -88,7 +93,7 @@ esp_err_t send_report(const report_struct * report)
         return status;
     }
 
-    char * picurl = make_file_url(SERVER_URL, report->report_pic_name);
+    char * picurl = make_full_url(SERVER_URL, report->report_pic_name);
 
     status = esp_http_client_set_url(client, picurl);
     status = esp_http_client_set_method(client, HTTP_METHOD_PUT);
@@ -114,7 +119,7 @@ esp_err_t send_report(const report_struct * report)
 
 void send_pics()
 {
-    char * picurl = make_file_url(SERVER_URL, "pic.jpg");
+    char * picurl = make_full_url(SERVER_URL, "pic.jpg");
     jpg_struct jpg2send = take_pic();
     esp_http_client_handle_t client = esp_http_client_init(&config);
     esp_http_client_set_url(client, picurl);
