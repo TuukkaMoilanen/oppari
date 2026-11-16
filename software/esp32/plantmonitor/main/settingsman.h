@@ -13,3 +13,4 @@ typedef struct
 static settings_struct settings;
 
 esp_err_t load_settings();
+esp_err_t parse_settings_json(const char * settings_str);

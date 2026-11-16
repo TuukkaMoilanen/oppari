@@ -5,6 +5,8 @@
 
 #include "http_client_service.h"
 #include "camera_capture.h"
+#include <stdlib.h>
+#include <string.h>
 
 static const char *TAG = "http_client_service";
 
@@ -63,6 +65,67 @@ esp_err_t check_http_response(const esp_http_client_handle_t * client)
     }
 
     return status;
+}
+
+esp_err_t check_and_retrieve_http_response(const esp_http_client_handle_t * client, char * response)
+{
+    esp_err_t status = ESP_FAIL;
+
+    char output_buffer[HTTP_OUTPUT_BUFFER_MAX_LENGTH + 1] = {0};
+    int content_length = 0;
+
+    content_length = esp_http_client_fetch_headers(* client);
+    if (content_length < 0)
+    {
+        ESP_LOGE(TAG, "Failed to fetch HTTP headers !!");
+    }
+    else
+    {
+        ESP_LOGI(TAG, "HTTP header content length: %d", content_length);
+        int data_length = esp_http_client_read_response(* client, output_buffer, HTTP_OUTPUT_BUFFER_MAX_LENGTH);
+        if (data_length >= 0)
+        {
+            ESP_LOGI(TAG, "local response buffer: %s", output_buffer);
+            output_buffer[content_length] = '\0';
+            strncpy(response, output_buffer, content_length + 1);
+            status = ESP_OK;
+        }
+        else
+        {
+            ESP_LOGE(TAG, "Failed to read HTTP response !!");
+        }
+    }
+
+    return status;
+}
+
+char * get_settings()
+{
+    esp_err_t status = ESP_FAIL;
+    char * setting = malloc(HTTP_OUTPUT_BUFFER_MAX_LENGTH);
+
+    esp_http_client_handle_t client = esp_http_client_init(&config);
+
+    char * settingsurl = make_full_url(SERVER_URL, SETTINGS_PATH);
+
+    status = esp_http_client_set_url(client, settingsurl);
+    status = esp_http_client_set_method(client, HTTP_METHOD_GET);
+    status = esp_http_client_open(client, 0);
+    
+    check_and_retrieve_http_response(&client, setting);
+    if (status != ESP_OK)
+    {
+        ESP_LOGE(TAG, "Failed to get settings !!");
+        setting = NULL;
+    }
+    else
+    {
+        ESP_LOGI(TAG, "got settings: %s", setting);
+        char * tmp = realloc(setting, (strlen(setting) + 1));
+        setting = tmp;
+    }
+
+    return setting;
 }
 
 esp_err_t send_report(const report_struct * report)

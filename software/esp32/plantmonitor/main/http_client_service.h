@@ -5,4 +5,5 @@
 
 
 esp_err_t send_report(const report_struct * report);
+char * get_settings();
 void send_pics();
