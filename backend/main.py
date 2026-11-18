@@ -28,7 +28,10 @@ class SettingsUpdate(BaseModel):
     moisture_target: float
     report_interval: int
     watering_check_interval: int
-    power_saving: int
+    power_saving: bool
+    watering_threshold: float
+    calibration_min: int
+    calibration_max: int
 
 
 @app.get("/measurements")
@@ -109,6 +112,9 @@ def update_settings(data: SettingsUpdate):
     settings.report_interval = data.report_interval
     settings.watering_check_interval = data.watering_check_interval
     settings.power_saving = data.power_saving
+    settings.watering_threshold = data.watering_threshold
+    settings.calibration_min = data.calibration_min
+    settings.calibration_max = data.calibration_max
 
     db.commit()
 

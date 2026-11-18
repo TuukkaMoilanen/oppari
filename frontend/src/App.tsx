@@ -24,7 +24,10 @@ interface Settings {
   moisture_target: number;
   report_interval: number;
   watering_check_interval: number;
-  power_saving: number;
+  power_saving: boolean;
+  watering_threshold: number;
+  calibration_min: number;
+  calibration_max: number; 
 }
 
 
@@ -97,7 +100,7 @@ function App() {
   const plantStatus =
     measurement &&
     settings &&
-    measurement.moisture < settings.moisture_target
+    measurement.moisture < settings.watering_threshold
       ? "🔴 Vaatii kastelua"
       : "🟢 Kosteus hyvä";
 
@@ -189,12 +192,15 @@ function App() {
         />
       )}
 
-      <ReferenceLine
-        y={30}
-        stroke="orange"
-        strokeDasharray="3 3"
-        label="Kasteluraja"
-      />
+      
+      {settings && (
+        <ReferenceLine
+          y={settings.watering_threshold}
+          stroke="orange"
+          strokeDasharray="3 3"
+          label="Kasteluraja"
+        />
+      )}
 
         <Line
           type="monotone"
@@ -207,150 +213,257 @@ function App() {
   <div className="settings-card">
     <h2>⚙️ Asetukset</h2>
 
-    <div className="settings-grid">
+<div className="settings-grid">
 
-      <div className="setting-card">
-        <div className="setting-value">
-          {settings.moisture_target} %
-        </div>
-
-        <div className="setting-controls">
-          <button
-            onClick={() =>
-              setSettings({
-                ...settings,
-                moisture_target:
-                  settings.moisture_target - 5,
-              })
-            }
-          >
-            -
-          </button>
-
-          <button
-            onClick={() =>
-              setSettings({
-                ...settings,
-                moisture_target:
-                  settings.moisture_target + 5,
-              })
-            }
-          >
-            +
-          </button>
-        </div>
-
-        <div className="setting-label">
-          Kosteustavoite
-        </div>
-      </div>
-
-      <div className="setting-card">
-        <div className="setting-value">
-          {settings.report_interval} min
-        </div>
-
-        <div className="setting-controls">
-          <button
-            onClick={() =>
-              setSettings({
-                ...settings,
-                report_interval:
-                  settings.report_interval - 5,
-              })
-            }
-          >
-            -
-          </button>
-
-          <button
-            onClick={() =>
-              setSettings({
-                ...settings,
-                report_interval:
-                  settings.report_interval + 5,
-              })
-            }
-          >
-            +
-          </button>
-        </div>
-
-        <div className="setting-label">
-          Raportointiväli
-        </div>
-      </div>
-
-      <div className="setting-card">
-        <div className="setting-value">
-          {settings.watering_check_interval} min
-        </div>
-
-        <div className="setting-controls">
-          <button
-            onClick={() =>
-              setSettings({
-                ...settings,
-                watering_check_interval:
-                  settings.watering_check_interval - 5,
-              })
-            }
-          >
-            -
-          </button>
-
-          <button
-            onClick={() =>
-              setSettings({
-                ...settings,
-                watering_check_interval:
-                  settings.watering_check_interval + 5,
-              })
-            }
-          >
-            +
-          </button>
-        </div>
-
-        <div className="setting-label">
-          Tarkistusväli
-        </div>
-      </div>
-
-      <div className="setting-card checkbox-card">
-        <div className="setting-value">
-          <input
-            type="checkbox"
-            checked={Boolean(settings.power_saving)}
-            onChange={(e) =>
-              setSettings({
-                ...settings,
-                power_saving:
-                  e.target.checked ? 1 : 0,
-              })
-            }
-          />
-        </div>
-
-        <div className="setting-label">
-          Virransäästö
-        </div>
-      </div>
-
+  <div className="setting-card">
+    <div className="setting-value">
+      {settings.moisture_target} %
     </div>
 
-    <button
-      className="save-button"
-      onClick={saveSettings}
-    >
-      Tallenna
-    </button>
+    <div className="setting-controls">
+      <button
+        onClick={() =>
+          setSettings({
+            ...settings,
+            moisture_target:
+              settings.moisture_target - 5,
+          })
+        }
+      >
+        -
+      </button>
+
+      <button
+        onClick={() =>
+          setSettings({
+            ...settings,
+            moisture_target:
+              settings.moisture_target + 5,
+          })
+        }
+      >
+        +
+      </button>
+    </div>
+
+    <div className="setting-label">
+      Kosteustavoite
+    </div>
   </div>
-)}
- 
+
+  <div className="setting-card">
+    <div className="setting-value">
+      {settings.watering_threshold} %
+    </div>
+
+    <div className="setting-controls">
+      <button
+        onClick={() =>
+          setSettings({
+            ...settings,
+            watering_threshold:
+              settings.watering_threshold - 5,
+          })
+        }
+      >
+        -
+      </button>
+
+      <button
+        onClick={() =>
+          setSettings({
+            ...settings,
+            watering_threshold:
+              settings.watering_threshold + 5,
+          })
+        }
+      >
+        +
+      </button>
+    </div>
+
+    <div className="setting-label">
+      Kasteluraja
+    </div>
+  </div>
+
+  <div className="setting-card">
+    <div className="setting-value">
+      {settings.report_interval} min
+    </div>
+
+    <div className="setting-controls">
+      <button
+        onClick={() =>
+          setSettings({
+            ...settings,
+            report_interval:
+              settings.report_interval - 5,
+          })
+        }
+      >
+        -
+      </button>
+
+      <button
+        onClick={() =>
+          setSettings({
+            ...settings,
+            report_interval:
+              settings.report_interval + 5,
+          })
+        }
+      >
+        +
+      </button>
+    </div>
+
+    <div className="setting-label">
+      Raportointiväli
+    </div>
+  </div>
+
+  <div className="setting-card">
+    <div className="setting-value">
+      {settings.watering_check_interval} min
+    </div>
+
+    <div className="setting-controls">
+      <button
+        onClick={() =>
+          setSettings({
+            ...settings,
+            watering_check_interval:
+              settings.watering_check_interval - 5,
+          })
+        }
+      >
+        -
+      </button>
+
+      <button
+        onClick={() =>
+          setSettings({
+            ...settings,
+            watering_check_interval:
+              settings.watering_check_interval + 5,
+          })
+        }
+      >
+        +
+      </button>
+    </div>
+
+    <div className="setting-label">
+      Tarkistusväli
+    </div>
+  </div>
+
+  <div className="setting-card">
+    <div className="setting-value">
+      {settings.calibration_min}
+    </div>
+
+    <div className="setting-controls">
+      <button
+        onClick={() =>
+          setSettings({
+            ...settings,
+            calibration_min:
+              settings.calibration_min - 100,
+          })
+        }
+      >
+        -
+      </button>
+
+      <button
+        onClick={() =>
+          setSettings({
+            ...settings,
+            calibration_min:
+              settings.calibration_min + 100,
+          })
+        }
+      >
+        +
+      </button>
+    </div>
+
+    <div className="setting-label">
+      Kalibrointi min
+    </div>
+  </div>
+
+  <div className="setting-card">
+    <div className="setting-value">
+      {settings.calibration_max}
+    </div>
+
+    <div className="setting-controls">
+      <button
+        onClick={() =>
+          setSettings({
+            ...settings,
+            calibration_max:
+              settings.calibration_max - 100,
+          })
+        }
+      >
+        -
+      </button>
+
+      <button
+        onClick={() =>
+          setSettings({
+            ...settings,
+            calibration_max:
+              settings.calibration_max + 100,
+          })
+        }
+      >
+        +
+      </button>
+    </div>
+
+    <div className="setting-label">
+      Kalibrointi max
+    </div>
+  </div>
+
+  <div className="setting-card checkbox-card">
+    <div className="setting-value">
+      <input
+        type="checkbox"
+        checked={settings.power_saving}
+        onChange={(e) =>
+          setSettings({
+            ...settings,
+            power_saving: e.target.checked,
+          })
+        }
+      />
+    </div>
+
+    <div className="setting-label">
+      Virransäästö
+    </div>
+  </div>
+
 </div>
-  );
+
+<button
+  className="save-button"
+  onClick={saveSettings}
+>
+  Tallenna
+</button>
+
+</div>
+)}
+
+</div>
+);
 }
-  
- 
+
 export default App;
